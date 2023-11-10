@@ -1,0 +1,7 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h1 class="text-center"> Ваш отклик на пост '{{post_heading}}' с текстом '{{text}}' был успешно оставлен.</h1>
+<br>
+<a href="{% url 'post_list' %}">Вернуться на главную</a>
+{% endblock content %}

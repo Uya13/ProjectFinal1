@@ -1,0 +1,83 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+<h1>Все отклики</h1>
+
+<form action="" method="get">
+    {{filterset.form.as_p }}
+    <input type="submit" value="Найти" />
+</form>
+
+{% if responses %}
+<table>
+    <tr>
+        <td>№</td>
+        <td>Пост</td>
+        <td>Пользователь</td>
+        <td>Описание</td>
+        <td>Дата</td>
+        <td>Принято</td>
+    </tr>
+    {% for response in responses %}
+    <tr>
+        <td>{{ response.id }}</td>
+        <td>{{ response.post.heading|censor }}</td>
+        <td>{{ response.user.username }}</td>
+        <td>{{ response.text|truncatechars:20|censor }}</td>
+        <td>{{ response.creation_datetime }}</td>
+        <td>
+            [
+            <a href="{% url 'change_response' response.id %}">
+                {{ response.is_accepted }}
+            </a>
+            ]
+        </td>
+        <td>
+            <a style="color: red;" href="{% url 'remove_response' response.id %}">
+                Удалить
+            </a>
+        </td>
+        <!-- <td>
+            [
+            <a href="/forum/{{ post.id }}">
+                {{ post.id }}
+            </a>
+            ]
+        </td>
+        <td>{{ post.heading|censor }}</td>
+        <td>{{ post.creation_datetime }}</td>
+        <td>{{ post.text|truncatechars:20|censor }}</td> -->
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<h2>Откликов нет!</h2>
+{% endif %}
+
+{% if page_obj.has_previous %}
+<a href="?{% url_replace page=1 %}">1</a>
+{% if page_obj.previous_page_number != 1 %}
+...
+<a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number}}</a>
+{% endif %}
+{% endif %}
+
+
+{{ page_obj.number }}
+
+{% if page_obj.has_next %}
+<a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+{% if paginator.num_pages != page_obj.next_page_number %}
+...
+<a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+{% endif %}
+{% endif %}
+
+
+{% endblock content %}

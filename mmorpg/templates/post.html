@@ -1,0 +1,27 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+<h1>{{ post.heading|censor }}</h1>
+<h3>{{ post.creation_datetime|date:'M d Y' }}</h3>
+{% autoescape off %}
+{{post.text|censor}}
+{% endautoescape %}
+{% if user == post.user %}
+<hr>
+[<a href="/forum/edit/{{post.id}}">Edit post</a>]
+{% elif user.is_authenticated %}
+<hr>
+<form action="{% url 'make_response' post.id %}" method="post">
+    {% csrf_token %}
+    <textarea name="response_text" id="response_text" cols="30" rows="10"></textarea>
+    <br>
+    <input type="submit" value="Make response" />
+</form>
+{% endif %}
+{% endblock content %}
